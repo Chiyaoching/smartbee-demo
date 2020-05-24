@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../views/Index.vue'
 import Today from '../views/Today.vue'
-import Chat from '../views/Chat.vue'
+import ChatList from '../views/chat/Index.vue'
+import Chat from '../views/chat/Chat.vue'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,10 @@ Vue.use(VueRouter)
   },
   {
     path: '/chat',
+    component: ChatList
+  },
+  {
+    path: '/chat/:roomId',
     component: Chat
   },
 ]
