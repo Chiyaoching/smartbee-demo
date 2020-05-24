@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import {firestorePlugin} from 'vuefire'
+
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 
@@ -14,7 +13,5 @@ const firebaseConfig = {
   measurementId: "G-2K2VK4M5Y1"
 }
 const firebaseApp = firebase.initializeApp(firebaseConfig)
-// global register
-window.firestore = firebaseApp.firestore()
 
-Vue.use(firestorePlugin)
+export const db = firebaseApp.firestore()
