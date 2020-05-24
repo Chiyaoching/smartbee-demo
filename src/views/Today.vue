@@ -1,5 +1,5 @@
 <template lang="pug">
-  
+  h1 Today
 </template>
 
 <script>
