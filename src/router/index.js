@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Login from '../views/login/Index.vue'
 import Index from '../views/Index.vue'
 import Today from '../views/Today.vue'
 import ChatList from '../views/chat/Index.vue'
@@ -10,19 +11,34 @@ Vue.use(VueRouter)
   const routes = [
   {
     path: '/',
-    component: Index
+    redirect: '/index'
+    // meta: {auth: true}
+  },
+  {
+    path: '/index',
+    component: Index,
+    meta: {auth: true}
+  },
+  {
+    name: 'login',
+    path: '/login',
+    component: Login,
+    meta: {auth: false}
   },
   {
     path: '/today',
-    component: Today
+    component: Today,
+    meta: {auth: true}
   },
   {
     path: '/chat',
-    component: ChatList
+    component: ChatList,
+    meta: {auth: true}
   },
   {
     path: '/chat/:roomId',
-    component: Chat
+    component: Chat,
+    meta: {auth: true}
   },
 ]
 

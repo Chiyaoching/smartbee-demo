@@ -34,7 +34,7 @@
 
 <script>
 import {db} from '@/plugins/firebase'
-console.log(db)
+
 export default {
   data: () => ({
     headers: [
@@ -86,7 +86,6 @@ export default {
   },
   computed: {
     roomList () {
-      console.log(this.rooms)
       return this.rooms
       .filter(item => item.name !== '')
       .map(item => ({
