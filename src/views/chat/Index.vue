@@ -47,7 +47,6 @@ export default {
     isCreatingRoom: false
   }),
   firestore: {
-    message: db.collection('Messages'),
     rooms: db.collection('Rooms')
   },
   mounted () {

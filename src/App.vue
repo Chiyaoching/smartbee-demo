@@ -1,10 +1,15 @@
 <template lang="pug">
   v-app
-    template(v-if="user")
+    template(v-if="user && userObj")
       Header
       v-content
         router-view
       Footer
+    template(v-else-if="$route.path !== '/login'")
+      v-content
+        v-container(fill-height)
+          v-row(justify="center" align="center")
+            v-progress-circular(:size="150" width="7" color="amber" indeterminate)
     template(v-else)
       v-content
         router-view
@@ -19,7 +24,8 @@ const fAuth = fApp.auth()
 export default {
   name: 'App',
   data: () => ({
-    user: null
+    user: null,
+    userObj: null
   }),
   components: {
     Header,
@@ -34,6 +40,7 @@ export default {
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               if (doc.data().userId === user.uid) {
+                this.userObj = doc.data()
                 this.$store.commit('userObj', doc.data())
               }
             })
