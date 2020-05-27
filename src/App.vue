@@ -1,60 +1,80 @@
-<template>
-  <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-content>
-      <HelloWorld/>
-    </v-content>
-  </v-app>
+<template lang="pug">
+  v-app
+    template(v-if="user && userObj")
+      Header
+      v-content
+        router-view
+      Footer
+    template(v-else-if="$route.path !== '/login'")
+      v-content
+        v-container(fill-height)
+          v-row(justify="center" align="center")
+            v-progress-circular(:size="150" width="7" color="amber" indeterminate)
+    template(v-else)
+      v-content
+        router-view
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import Header from '@/views/layout/Header'
+import Footer from '@/views/layout/Footer'
+import {fApp, db} from '@/plugins/firebase'
+const fAuth = fApp.auth()
 
 export default {
   name: 'App',
-
-  components: {
-    HelloWorld,
-  },
-
   data: () => ({
-    //
+    user: null,
+    userObj: null
   }),
+  components: {
+    Header,
+    Footer
+  },
+  mounted () {
+    fAuth.onAuthStateChanged(user => {
+      if (user) {
+        this.user = user
+        db.collection("Users")
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              if (doc.data().userId === user.uid) {
+                this.userObj = doc.data()
+                this.$store.commit('userObj', doc.data())
+              }
+            })
+        })
+        this.$store.commit('userInfo', user)
+        this.$store.commit('isAuth', true)
+      } else {
+        this.user = null
+        this.$store.commit('userInfo', null)
+        this.$store.commit('userObj', null)
+        this.$store.commit('isAuth', false)
+        if (this.$route.path !== '/login') {
+          this.$router.push('/login')
+        }
+      }
+    })
+  },
+  computed: {
+    isAuth () {
+      return this.$store.getters.getAuthStatus
+    },
+    userInfo () {
+      return this.$store.getters.getUserInfo
+    }
+  },
+  watch: {
+    '$route.path' (value) {
+      if (value === '/login' && this.isAuth) {
+        this.$router.push('/index')
+      }
+    }
+  }
 };
 </script>
+
+<style lang="sass">
+</style>

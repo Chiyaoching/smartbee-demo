@@ -2,10 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import vuetify from './plugins/vuetify';
+import vuetify from './plugins/vuetify'
+import './plugins/vuefire'
 import '@babel/polyfill'
-import 'roboto-fontface/css/roboto/roboto-fontface.css'
-import '@mdi/font/css/materialdesignicons.css'
+// import 'roboto-fontface/css/roboto/roboto-fontface.css'
+// import '@mdi/font/css/materialdesignicons.css'
 
 Vue.config.productionTip = false
 
