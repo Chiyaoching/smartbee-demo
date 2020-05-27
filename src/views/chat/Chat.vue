@@ -15,7 +15,7 @@
                     v-row(v-for="(item, index) in messages" :key="item.msg + index" :justify="item.isSelf ? 'end' : 'start'" v-if="userInfo")
                       v-col(cols="auto")
                         h4(:class="item.isSelf ? 'text-right' : 'text-left'") {{item.username}}
-                        v-chip(class="ma-2" :outlined="!item.isSelf" :color="!item.isSelf ? 'black' : ''" label v-if="!item.image") {{item.msg}}
+                        div.ma-2.msg-block(:class="!item.isSelf ? 'outlined' : ''" :color="!item.isSelf ? 'black' : ''" v-if="!item.image") {{item.msg}}
                         img(:src="item.image" :width="imgWidth" contain v-else)
                       
             v-row.input-line(align="baseline" :class="isExtend ? 'extend' : ''")
@@ -56,15 +56,6 @@ export default {
   },
   mounted () {
     this.roomId = this.$route.params.roomId
-    // db.collection('Messages')
-    //   .get()
-    //   .then(querySnapshot => {
-    //     querySnapshot.forEach((doc) => {
-    //       console.log(doc.data())
-    //       this.messages.push({...doc.data(), isSelf: true})
-    //     })
-    //   })
-    console.log(this.userInfo)
   },
   computed: {
     userInfo () {
@@ -90,21 +81,21 @@ export default {
     },
     sendImage (item) {
       this.__convertImgtoBase64(item)
-      .then(base64 => {
-        db.collection('Messages').add({
-          roomId: this.roomId,
-          userId: this.userInfo.userId,
-          username: this.userInfo.name,
-          msg: '',
-          image: base64,
-          createTime: Date.now()
+        .then(base64 => {
+          db.collection('Messages').add({
+            roomId: this.roomId,
+            userId: this.userInfo.userId,
+            username: this.userInfo.name,
+            msg: '',
+            image: base64,
+            createTime: Date.now()
+          })
+        }).then(() => {
+          console.log('success')
+          this.isExtend = false
+        }).catch(err => {
+          console.error(err)
         })
-      }).then(() => {
-        console.log('success')
-        this.isExtend = false
-      }).catch(err => {
-        console.error(err)
-      }) 
     },
     __convertImgtoBase64 (image) {
       return new Promise((resolve, reject) => {
@@ -143,6 +134,14 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+  .msg-block
+    border: 1px solid #505050
+    padding: 5px 10px
+    border-radius: 5px
+    color: white
+    background-color: gray
+    &.outlined
+      background-color: transparent
   .input-line
     background-color: #1e1e1e
     position: absolute
